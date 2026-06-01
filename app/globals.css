@@ -8,6 +8,7 @@
   --kelif-card: #141414;
   --kelif-border: #222222;
   --kelif-muted: #888888;
+  --sidebar-width: 224px;
   --nav-height: 58px;
 }
 
@@ -20,12 +21,42 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Bottom nav safe-area spacing */
+/* ─── PAGE WRAPPER ──────────────────────────────────── */
+/* Mobile: pad bottom so content doesn't hide under nav */
 .page-wrapper {
   padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
+  min-height: 100vh;
 }
 
-/* Bottom navigation bar */
+/* Desktop: offset for sidebar, no bottom padding */
+@media (min-width: 768px) {
+  .page-wrapper {
+    margin-left: var(--sidebar-width);
+    padding-bottom: 0;
+  }
+}
+
+/* ─── SIDEBAR NAV (desktop only) ────────────────────── */
+.sidebar-nav {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: #0f0f0f;
+  border-right: 1px solid var(--kelif-border);
+  flex-direction: column;
+  z-index: 100;
+}
+
+@media (min-width: 768px) {
+  .sidebar-nav {
+    display: flex;
+  }
+}
+
+/* ─── BOTTOM NAV (mobile only) ──────────────────────── */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -33,12 +64,18 @@ body {
   right: 0;
   height: calc(var(--nav-height) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
-  background: rgba(13, 13, 13, 0.92);
+  background: rgba(13, 13, 13, 0.94);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid #222;
   display: flex;
   z-index: 100;
+}
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
 }
 
 .bottom-nav-item {
@@ -50,28 +87,83 @@ body {
   text-decoration: none;
   position: relative;
   padding: 6px 0;
-  transition: color 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Page layout */
+/* ─── PAGE CONTENT CONTAINERS ───────────────────────── */
+/* Mobile first, then expand on desktop */
 .page {
   padding: 20px 16px 0;
-  max-width: 600px;
-  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: 36px 48px 0;
+    max-width: 1000px;
+  }
 }
 
 .page-wide {
   padding: 20px 16px 0;
 }
 
+@media (min-width: 768px) {
+  .page-wide {
+    padding: 36px 48px 0;
+  }
+}
+
+/* ─── KANBAN (pipeline) ─────────────────────────────── */
+/* Mobile: horizontal scroll */
+.kanban {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Desktop: 4-column grid */
+@media (min-width: 768px) {
+  .kanban {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    overflow-x: visible;
+    padding-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    scroll-snap-type: none;
+  }
+}
+
+.kanban-col {
+  flex-shrink: 0;
+  min-width: min(78vw, 220px);
+  scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+  .kanban-col {
+    min-width: 0;
+    flex-shrink: unset;
+  }
+}
+
+/* ─── INPUTS ─────────────────────────────────────────── */
 input, select, textarea {
   background: #1a1a1a;
   border: 1px solid var(--kelif-border);
   color: white;
   border-radius: 8px;
   padding: 10px 12px;
-  font-size: 16px; /* 16px prevents iOS zoom on focus */
+  font-size: 16px; /* prevents iOS zoom on focus */
   width: 100%;
   outline: none;
   transition: border-color 0.15s;
@@ -87,10 +179,9 @@ input::placeholder, textarea::placeholder {
   color: var(--kelif-muted);
 }
 
-select option {
-  background: #1a1a1a;
-}
+select option { background: #1a1a1a; }
 
+/* ─── CARDS ──────────────────────────────────────────── */
 .card {
   background: var(--kelif-card);
   border: 1px solid var(--kelif-border);
@@ -98,6 +189,7 @@ select option {
   padding: 16px;
 }
 
+/* ─── BUTTONS ────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -127,6 +219,7 @@ select option {
 .btn-red:active { opacity: 0.8; }
 .btn-red:hover { background: #cc2f3b; }
 
+/* ─── BADGES ─────────────────────────────────────────── */
 .badge {
   display: inline-block;
   font-size: 11px;
@@ -136,13 +229,14 @@ select option {
   white-space: nowrap;
 }
 
-.badge-teal { background: #0a2e24; color: #4ecca3; }
+.badge-teal   { background: #0a2e24; color: #4ecca3; }
 .badge-purple { background: #1e1535; color: #a78bfa; }
-.badge-amber { background: #2e1e05; color: #fbbf24; }
-.badge-red { background: #2e0a0c; color: #f87171; }
-.badge-gray { background: #1e1e1e; color: #888; }
-.badge-blue { background: #0a1e35; color: #60a5fa; }
+.badge-amber  { background: #2e1e05; color: #fbbf24; }
+.badge-red    { background: #2e0a0c; color: #f87171; }
+.badge-gray   { background: #1e1e1e; color: #888; }
+.badge-blue   { background: #0a1e35; color: #60a5fa; }
 
+/* ─── MISC ───────────────────────────────────────────── */
 .metric {
   background: #1a1a1a;
   border-radius: 12px;

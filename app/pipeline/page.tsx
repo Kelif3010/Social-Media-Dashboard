@@ -13,7 +13,7 @@ const statusColor = ['#a78bfa', '#fbbf24', '#60a5fa', '#4ecca3']
 
 export default function Pipeline() {
   const [videos, setVideos] = useState<PipelineVideo[]>([])
-  const [form, setForm] = useState({ title: '', category: 'Vlog', notes: '' })
+  const [form, setForm]     = useState({ title: '', category: 'Vlog', notes: '' })
   const [adding, setAdding] = useState(false)
 
   useEffect(() => { fetchVideos() }, [])
@@ -44,7 +44,7 @@ export default function Pipeline() {
 
   return (
     <main className="page-wide">
-      <div className="flex justify-between items-center mb-5 px-0">
+      <div className="flex justify-between items-center mb-5">
         <div>
           <h1 className="text-xl font-semibold mb-0.5">Video-Pipeline</h1>
           <p className="text-xs" style={{ color: '#666' }}>Von der Idee bis zum Upload</p>
@@ -60,7 +60,8 @@ export default function Pipeline() {
           <div className="flex flex-col gap-3 mb-3">
             <div>
               <label className="text-xs mb-1 block" style={{ color: '#888' }}>Titel / Thema</label>
-              <input placeholder="z.B. Wir testen türkisches Frühstück" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+              <input placeholder="z.B. Wir testen türkisches Frühstück" value={form.title}
+                onChange={e => setForm({ ...form, title: e.target.value })} />
             </div>
             <div>
               <label className="text-xs mb-1 block" style={{ color: '#888' }}>Kategorie</label>
@@ -70,7 +71,8 @@ export default function Pipeline() {
             </div>
             <div>
               <label className="text-xs mb-1 block" style={{ color: '#888' }}>Notizen (optional)</label>
-              <textarea placeholder="Ideen, Locations, Besonderheiten…" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={2} />
+              <textarea placeholder="Ideen, Locations, Besonderheiten…" value={form.notes}
+                onChange={e => setForm({ ...form, notes: e.target.value })} rows={2} />
             </div>
           </div>
           <div className="flex gap-2">
@@ -80,32 +82,22 @@ export default function Pipeline() {
         </div>
       )}
 
-      {/* Horizontal scrollable Kanban */}
-      <div style={{
-        display: 'flex',
-        gap: 12,
-        overflowX: 'auto',
-        paddingBottom: 12,
-        scrollSnapType: 'x mandatory',
-        WebkitOverflowScrolling: 'touch',
-        marginLeft: -16,
-        marginRight: -16,
-        paddingLeft: 16,
-        paddingRight: 16,
-      }}>
+      {/*
+        Mobile: horizontal scroll (snap to column)
+        Desktop: 4-column grid
+        Handled via .kanban / .kanban-col in globals.css
+      */}
+      <div className="kanban">
         {STATUSES.map((status, idx) => {
           const col = videos.filter(v => v.status === idx)
           return (
-            <div key={status} style={{
-              minWidth: 220,
-              maxWidth: 220,
-              scrollSnapAlign: 'start',
-              flexShrink: 0,
-            }}>
+            <div key={status} className="kanban-col">
               <div className="flex items-center justify-between mb-2 px-1">
                 <div className="flex items-center gap-1.5">
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: statusColor[idx] }} />
-                  <span className="text-xs font-medium" style={{ color: '#888' }}>{status}</span>
+                  <span className="text-xs font-medium uppercase tracking-wider" style={{ color: '#777' }}>
+                    {status}
+                  </span>
                 </div>
                 <span className="text-xs" style={{ color: '#444' }}>{col.length}</span>
               </div>
@@ -126,7 +118,8 @@ export default function Pipeline() {
                           <ArrowRight size={11} />
                         </button>
                       )}
-                      <button className="btn text-xs py-1 px-2 ml-auto" style={{ color: '#f87171', borderColor: '#2e0a0c' }}
+                      <button className="btn text-xs py-1 px-2 ml-auto"
+                        style={{ color: '#f87171', borderColor: '#2e0a0c' }}
                         onClick={() => deleteVideo(v.id)}>
                         <Trash2 size={11} />
                       </button>
@@ -134,9 +127,8 @@ export default function Pipeline() {
                   </div>
                 ))}
                 {col.length === 0 && (
-                  <div className="border border-dashed rounded-xl p-4 text-center text-xs" style={{ borderColor: '#222', color: '#444' }}>
-                    Leer
-                  </div>
+                  <div className="border border-dashed rounded-xl p-4 text-center text-xs"
+                    style={{ borderColor: '#222', color: '#444' }}>Leer</div>
                 )}
               </div>
             </div>

@@ -6,9 +6,9 @@ import { format, parseISO, isAfter, startOfToday } from 'date-fns'
 import { de } from 'date-fns/locale'
 
 const PLATFORMS = [
-  { key: 'YouTube', icon: Youtube, color: '#E63946' },
-  { key: 'Instagram', icon: Instagram, color: '#a78bfa' },
-  { key: 'TikTok', icon: Music, color: '#fbbf24' },
+  { key: 'YouTube',   icon: Youtube,    color: '#E63946' },
+  { key: 'Instagram', icon: Instagram,  color: '#a78bfa' },
+  { key: 'TikTok',    icon: Music,      color: '#fbbf24' },
 ]
 
 function Sparkline({ data, color }: { data: number[]; color: string }) {
@@ -31,13 +31,13 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
 }
 
 export default function Overview() {
-  const [latest, setLatest] = useState<Record<string, number>>({})
-  const [history, setHistory] = useState<Record<string, number[]>>({})
-  const [events, setEvents] = useState<CalendarEvent[]>([])
+  const [latest, setLatest]     = useState<Record<string, number>>({})
+  const [history, setHistory]   = useState<Record<string, number[]>>({})
+  const [events, setEvents]     = useState<CalendarEvent[]>([])
   const [milestones, setMilestones] = useState<Milestone[]>([])
-  const [adding, setAdding] = useState(false)
-  const [form, setForm] = useState({ platform: 'YouTube', count: '', goal: '' })
-  const [loading, setLoading] = useState(true)
+  const [adding, setAdding]     = useState(false)
+  const [form, setForm]         = useState({ platform: 'YouTube', count: '', goal: '' })
+  const [loading, setLoading]   = useState(true)
 
   useEffect(() => { fetchAll() }, [])
 
@@ -50,12 +50,9 @@ export default function Overview() {
     ])
     if (subData) {
       const latestMap: Record<string, number> = {}
-      const histMap: Record<string, number[]> = {}
+      const histMap:   Record<string, number[]> = {}
       subData.forEach(e => {
-        if (e.platform.endsWith('_goal')) {
-          latestMap[e.platform] = e.count
-          return
-        }
+        if (e.platform.endsWith('_goal')) { latestMap[e.platform] = e.count; return }
         if (!histMap[e.platform]) histMap[e.platform] = []
         histMap[e.platform].push(e.count)
         latestMap[e.platform] = e.count
@@ -65,7 +62,10 @@ export default function Overview() {
     }
     if (evData) {
       const today = startOfToday()
-      setEvents(evData.filter(e => isAfter(parseISO(e.event_date), today) || e.event_date === format(today, 'yyyy-MM-dd')).slice(0, 5))
+      setEvents(evData.filter(e =>
+        isAfter(parseISO(e.event_date), today) ||
+        e.event_date === format(today, 'yyyy-MM-dd')
+      ).slice(0, 5))
     }
     if (msData) setMilestones(msData)
     setLoading(false)
@@ -73,7 +73,9 @@ export default function Overview() {
 
   async function saveStats() {
     if (!form.count) return
-    const entries = [{ platform: form.platform, count: parseInt(form.count), recorded_at: format(new Date(), 'yyyy-MM-dd') }]
+    const entries: { platform: string; count: number; recorded_at: string }[] = [
+      { platform: form.platform, count: parseInt(form.count), recorded_at: format(new Date(), 'yyyy-MM-dd') }
+    ]
     if (form.goal) entries.push({ platform: `${form.platform}_goal`, count: parseInt(form.goal), recorded_at: format(new Date(), 'yyyy-MM-dd') })
     await supabase.from('subscriber_history').insert(entries)
     setAdding(false)
@@ -87,7 +89,7 @@ export default function Overview() {
   }
 
   const eventBadge: Record<string, string> = { dreh: 'badge-purple', schnitt: 'badge-amber', upload: 'badge-teal' }
-  const eventLabel: Record<string, string> = { dreh: 'Drehtag', schnitt: 'Schnitttag', upload: 'Upload' }
+  const eventLabel: Record<string, string>  = { dreh: 'Drehtag', schnitt: 'Schnitttag', upload: 'Upload' }
 
   if (loading) return (
     <main className="page flex items-center justify-center min-h-screen">
@@ -99,16 +101,18 @@ export default function Overview() {
     <main className="page">
       <div className="mb-6">
         <h1 className="text-xl font-semibold mb-0.5">Guten Tag, Ken & Elif 👋</h1>
-        <p className="text-xs" style={{ color: '#666' }}>{format(new Date(), "EEEE, d. MMMM yyyy", { locale: de })}</p>
+        <p className="text-xs" style={{ color: '#666' }}>
+          {format(new Date(), "EEEE, d. MMMM yyyy", { locale: de })}
+        </p>
       </div>
 
-      {/* Platform Cards */}
-      <div className="flex flex-col gap-3 mb-6">
+      {/* Platform cards — stacked on mobile, 3 cols on desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
         {PLATFORMS.map(({ key, icon: Icon, color }) => {
           const count = latest[key] || 0
-          const goal = latest[`${key}_goal`] || 0
-          const pct = goal ? Math.min(100, Math.round((count / goal) * 100)) : 0
-          const hist = history[key] || []
+          const goal  = latest[`${key}_goal`] || 0
+          const pct   = goal ? Math.min(100, Math.round((count / goal) * 100)) : 0
+          const hist  = history[key] || []
           return (
             <div key={key} className="card">
               <div className="flex items-center justify-between mb-2">
@@ -125,7 +129,9 @@ export default function Overview() {
                 </div>
                 {hist.length > 1 && (
                   <div className="text-right">
-                    <div className="text-sm font-medium" style={{ color: hist[hist.length - 1] >= hist[hist.length - 2] ? '#4ecca3' : '#f87171' }}>
+                    <div className="text-sm font-medium" style={{
+                      color: hist[hist.length - 1] >= hist[hist.length - 2] ? '#4ecca3' : '#f87171'
+                    }}>
                       {hist[hist.length - 1] >= hist[hist.length - 2] ? '+' : ''}
                       {(hist[hist.length - 1] - hist[hist.length - 2]).toLocaleString('de-DE')}
                     </div>
@@ -146,7 +152,7 @@ export default function Overview() {
         })}
       </div>
 
-      {/* Zahlen eintragen */}
+      {/* Update form */}
       <div className="flex justify-between items-center mb-3">
         <span className="text-xs font-medium uppercase tracking-wider" style={{ color: '#666' }}>Zahlen aktualisieren</span>
         <button className="btn text-xs py-1.5 px-3" onClick={() => setAdding(!adding)}>
@@ -163,13 +169,17 @@ export default function Overview() {
                 <option>YouTube</option><option>Instagram</option><option>TikTok</option>
               </select>
             </div>
-            <div>
-              <label className="text-xs mb-1 block" style={{ color: '#888' }}>Aktuelle Follower</label>
-              <input type="number" inputMode="numeric" placeholder="z.B. 1250" value={form.count} onChange={e => setForm({ ...form, count: e.target.value })} />
-            </div>
-            <div>
-              <label className="text-xs mb-1 block" style={{ color: '#888' }}>Nächstes Ziel (optional)</label>
-              <input type="number" inputMode="numeric" placeholder="z.B. 5000" value={form.goal} onChange={e => setForm({ ...form, goal: e.target.value })} />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs mb-1 block" style={{ color: '#888' }}>Aktuelle Follower</label>
+                <input type="number" inputMode="numeric" placeholder="z.B. 1250"
+                  value={form.count} onChange={e => setForm({ ...form, count: e.target.value })} />
+              </div>
+              <div>
+                <label className="text-xs mb-1 block" style={{ color: '#888' }}>Ziel (optional)</label>
+                <input type="number" inputMode="numeric" placeholder="z.B. 5000"
+                  value={form.goal} onChange={e => setForm({ ...form, goal: e.target.value })} />
+              </div>
             </div>
           </div>
           <div className="flex gap-2">
@@ -179,49 +189,57 @@ export default function Overview() {
         </div>
       )}
 
-      {/* Nächste Termine */}
-      <div className="card mb-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Calendar size={14} style={{ color: '#888' }} />
-          <span className="text-sm font-medium">Nächste Termine</span>
-        </div>
-        {events.length === 0 ? (
-          <p className="text-xs" style={{ color: '#555' }}>Keine Termine — im Kalender hinzufügen.</p>
-        ) : events.map(e => (
-          <div key={e.id} className="flex items-center justify-between py-2.5 border-b" style={{ borderColor: '#1e1e1e' }}>
-            <div>
-              <div className="text-sm">{e.title}</div>
-              <div className="text-xs mt-0.5" style={{ color: '#666' }}>{format(parseISO(e.event_date), 'd. MMM', { locale: de })}</div>
-            </div>
-            <span className={`badge ${eventBadge[e.event_type]}`}>{eventLabel[e.event_type]}</span>
+      {/* Events + Milestones — stacked on mobile, 2 cols on desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="card">
+          <div className="flex items-center gap-2 mb-3">
+            <Calendar size={14} style={{ color: '#888' }} />
+            <span className="text-sm font-medium">Nächste Termine</span>
           </div>
-        ))}
-      </div>
-
-      {/* Meilensteine */}
-      <div className="card mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <Award size={14} style={{ color: '#888' }} />
-          <span className="text-sm font-medium">Meilensteine</span>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          {milestones.map(m => (
-            <div key={m.id} className="flex items-center justify-between py-1.5">
-              <div className="flex items-center gap-2">
-                <span className="text-xs" style={{ color: m.achieved_at ? '#4ecca3' : '#555' }}>
-                  {m.achieved_at ? '✓' : '○'}
-                </span>
-                <span className="text-sm" style={{ color: m.achieved_at ? '#555' : 'white', textDecoration: m.achieved_at ? 'line-through' : 'none' }}>
-                  {m.platform} {m.value.toLocaleString('de-DE')}
-                </span>
+          {events.length === 0 ? (
+            <p className="text-xs" style={{ color: '#555' }}>Keine Termine — im Kalender hinzufügen.</p>
+          ) : events.map(e => (
+            <div key={e.id} className="flex items-center justify-between py-2.5 border-b" style={{ borderColor: '#1e1e1e' }}>
+              <div>
+                <div className="text-sm">{e.title}</div>
+                <div className="text-xs mt-0.5" style={{ color: '#666' }}>
+                  {format(parseISO(e.event_date), 'd. MMM', { locale: de })}
+                </div>
               </div>
-              {!m.achieved_at ? (
-                <button className="btn text-xs py-1 px-2" onClick={() => markMilestone(m.id)}>Erreicht!</button>
-              ) : (
-                <span className="text-xs" style={{ color: '#444' }}>{format(parseISO(m.achieved_at), 'd. MMM yy', { locale: de })}</span>
-              )}
+              <span className={`badge ${eventBadge[e.event_type]}`}>{eventLabel[e.event_type]}</span>
             </div>
           ))}
+        </div>
+
+        <div className="card">
+          <div className="flex items-center gap-2 mb-3">
+            <Award size={14} style={{ color: '#888' }} />
+            <span className="text-sm font-medium">Meilensteine</span>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            {milestones.map(m => (
+              <div key={m.id} className="flex items-center justify-between py-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs" style={{ color: m.achieved_at ? '#4ecca3' : '#555' }}>
+                    {m.achieved_at ? '✓' : '○'}
+                  </span>
+                  <span className="text-sm" style={{
+                    color: m.achieved_at ? '#555' : 'white',
+                    textDecoration: m.achieved_at ? 'line-through' : 'none'
+                  }}>
+                    {m.platform} {m.value.toLocaleString('de-DE')}
+                  </span>
+                </div>
+                {!m.achieved_at ? (
+                  <button className="btn text-xs py-1 px-2" onClick={() => markMilestone(m.id)}>Erreicht!</button>
+                ) : (
+                  <span className="text-xs" style={{ color: '#444' }}>
+                    {format(parseISO(m.achieved_at), 'd. MMM yy', { locale: de })}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </main>
