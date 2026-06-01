@@ -167,9 +167,9 @@ export default function Timeline() {
       {/* Tab switcher */}
       <div className="flex gap-2 mb-4 p-1 rounded-xl" style={{ background: '#141414' }}>
         {([
-          { key: 'liste',   label: 'Liste' },
-          { key: 'analyse', label: 'Bestes Format', icon: TrendingUp },
-        ] as const).map(({ key, label, icon: Icon }) => (
+          { key: 'liste'   as const, label: 'Liste',          icon: null },
+          { key: 'analyse' as const, label: 'Bestes Format',  icon: TrendingUp },
+        ]).map(({ key, label, icon: Icon }) => (
           <button key={key}
             className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-medium transition-all"
             style={{ background: tab === key ? '#1e1e1e' : 'transparent', color: tab === key ? 'white' : '#666' }}
