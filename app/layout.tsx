@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import Nav from '@/components/Nav'
 
 export const metadata: Metadata = {
   title: 'Kelif Creator HQ',
@@ -13,9 +14,10 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#E63946',
+  themeColor: '#0D0D0D',
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -27,7 +29,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="bg-kelif-dark text-white min-h-screen antialiased">
-        {children}
+        <div className="page-wrapper">
+          {children}
+        </div>
+        <Nav />
       </body>
     </html>
   )

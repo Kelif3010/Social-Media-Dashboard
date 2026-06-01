@@ -55,6 +55,9 @@ export type VideoEntry = {
   location: string | null
   youtube_url: string | null
   notes: string | null
+  views: number | null
+  likes: number | null
+  comments: number | null
   created_at: string
 }
 
@@ -81,4 +84,5 @@ export type ChecklistItem = {
   label: string
   category: string
   sort_order: number
+  checked: boolean
 }
