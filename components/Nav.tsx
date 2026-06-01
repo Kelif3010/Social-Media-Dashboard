@@ -1,10 +1,11 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Kanban, Calendar, Target, Clock, CheckSquare, Play } from 'lucide-react'
+import { LayoutDashboard, Kanban, Calendar, Target, Clock, CheckSquare, Play, BarChart2 } from 'lucide-react'
 
 const nav = [
   { href: '/', icon: LayoutDashboard, label: 'Übersicht' },
+  { href: '/analytics', icon: BarChart2, label: 'YouTube Analytics' },
   { href: '/pipeline', icon: Kanban, label: 'Pipeline' },
   { href: '/calendar', icon: Calendar, label: 'Kalender' },
   { href: '/vision', icon: Target, label: 'Vision & Ziele' },
