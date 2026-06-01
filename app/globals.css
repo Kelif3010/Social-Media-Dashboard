@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --kelif-red: #E63946;
+  --kelif-dark: #0D0D0D;
+  --kelif-card: #141414;
+  --kelif-border: #222222;
+  --kelif-muted: #888888;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--kelif-dark);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+input, select, textarea {
+  background: #1a1a1a;
+  border: 1px solid var(--kelif-border);
+  color: white;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--kelif-red);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--kelif-muted);
+}
+
+select option {
+  background: #1a1a1a;
+}
+
+.card {
+  background: var(--kelif-card);
+  border: 1px solid var(--kelif-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--kelif-border);
+  background: transparent;
+  color: white;
+  transition: all 0.15s;
+}
+
+.btn:hover { background: #1e1e1e; }
+
+.btn-red {
+  background: var(--kelif-red);
+  border-color: var(--kelif-red);
+  color: white;
+}
+
+.btn-red:hover { background: #cc2f3b; }
+
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.badge-teal { background: #0a2e24; color: #4ecca3; }
+.badge-purple { background: #1e1535; color: #a78bfa; }
+.badge-amber { background: #2e1e05; color: #fbbf24; }
+.badge-red { background: #2e0a0c; color: #f87171; }
+.badge-gray { background: #1e1e1e; color: #888; }
+.badge-blue { background: #0a1e35; color: #60a5fa; }
+
+.metric {
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.progress-bar-bg {
+  background: #222;
+  border-radius: 20px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 6px;
+  border-radius: 20px;
+  background: var(--kelif-red);
+  transition: width 0.5s ease;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
